@@ -1,8 +1,10 @@
-import { useState } from 'react';
+// import { useState } from 'react';
+// import { movies as localMovies } from '../data/data';
 import { Link } from 'react-router-dom';
 import FeaturedCarousel from '../components/FeaturedCarousel';
-import { movies as localMovies } from '../data/data';
 // TODO ขั้นที่ 5: import { useEffect } from 'react' และ import { getMovies } from '../api/tmdb'
+import { useEffect, useState } from 'react';
+import { getMovies } from '../api/tmdb';
 
 const STEPS = [
   { n: 1, file: 'src/api/tmdb.js', what: 'เขียนส่วน fetch ใน getJSON' },
@@ -26,7 +28,17 @@ function shuffle(list) {
 function Home() {
   // สุ่มครั้งเดียวตอน component เกิด แล้วจำไว้ใน state (กดเลื่อนแล้วลำดับไม่เปลี่ยน)
   // TODO ขั้นที่ 5: เปลี่ยนเป็น useState([]) แล้วใช้ useEffect เรียก getMovies() แล้ว setPicks(shuffle(list))
-  const [picks, setPicks] = useState(() => shuffle(localMovies));
+  // const [picks, setPicks] = useState(() => shuffle(localMovies));
+  const [picks, setPicks] = useState([]);   // เริ่มว่าง รอข้อมูลจาก API แล้วค่อยสุ่ม
+
+  // ใช้ getMovies() ตัวเดียวกับหน้า Movies ถ้าวันนี้เคยโหลดแล้วจะได้จาก localStorage ทันที
+  useEffect(() => {
+    let ignore = false;
+    getMovies()
+      .then(list => { if (!ignore) setPicks(shuffle(list)); })
+      .catch(() => { if (!ignore) setPicks([]); });   // พลาดก็แค่ไม่มีหนังแนะนำ หน้าแรกไม่ควรพัง
+    return () => { ignore = true; };
+  }, []);
 
   return (
     <div className="mx-auto max-w-5xl px-4 md:px-6">
@@ -85,3 +97,7 @@ function Home() {
 }
 
 export default Home;
+
+//เป็นโครงเดิมของหน้า Home.jsx ที่มีการปรับปรุงให้สามารถดึงข้อมูลหนังจาก API ของ TMDB และแสดงผลในรูปแบบของ Carousel โดยมีการใช้ useEffect เพื่อโหลดข้อมูลเมื่อ component ถูก mount และใช้ useState เพื่อจัดการกับ state ของ picks (รายการหนังที่แนะนำ)
+// ดีกว่าที่สิ่งที่ปิดไว้คือการใช้ข้อมูลจากไฟล์ data.js โดยตรง ซึ่งจะทำให้สามารถแสดงผลหนังที่กำลังฉายในประเทศไทยได้อย่างถูกต้องและเป็นปัจจุบัน
+// ตรงที่ใช้สุ่มลำดับหนังคือการใช้ฟังก์ชัน shuffle เพื่อให้ผู้ใช้สามารถเห็นหนังแนะนำในลำดับที่แตกต่างกันทุกครั้งที่เข้ามาที่หน้า Home
