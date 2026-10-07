@@ -5,8 +5,7 @@ import MovieGrid from '../components/MovieGrid';
 import { useEffect, useState } from 'react';
 // import { getMovies, CACHE_KEY } from '../api/tmdb';
 import { getMovies } from '../api/backend'; //เอา CACHE_KEY ออกเพราะไม่ต้องใช้แล้วเพราะ backend.js จะจัดการเอง ต่างจาก tmdb.js ที่ต้องใช้ localStorage ในการเก็บ cache
-// Backend จะจัดการ cache ให้เอง ไม่ต้องใช้ CACHE_KEY และ forget() ของ tmdb.js อีกต่อไป โดยจะเก็บใน localStorage ของ browser และโหลดใหม่วันละครั้ง (ถ้าไม่พลาด) แต่ถ้าเกิด error จะไม่เก็บ cache ไว้เลย
-// import { forget } from '../api/cache';  // ไม่ต้องใช้แล้วเพราะ backend.js จะจัดการ cache ให้เอง
+// import { forget } from '../api/cache';  // 
 
 function Movies() {
   const [query, setQuery] = useState('');          // คำค้น (controlled input) กรองในเครื่อง ไม่ยิง API
@@ -40,7 +39,7 @@ function Movies() {
     async function load() {
       setStatus('loading');
       try {
-        const list = await getMovies();            // ครั้งแรกของวันยิง API ครั้งถัดไปอ่านจาก localStorage
+        const list = await getMovies();
         if (!ignore) {
           setMovies(list);
           setStatus('success');
@@ -76,7 +75,9 @@ function Movies() {
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">หนังทั้งหมด</h1>
           <p className="text-sm text-slate-500">
-            แหล่งข้อมูล: data.js {status === 'success' && `| พบ ${shown.length} จาก ${movies.length} เรื่อง`}
+            {/* แหล่งข้อมูล: data.js {status === 'success' && `| พบ ${shown.length} จาก ${movies.length} เรื่อง`} */}
+            แหล่งข้อมูล: Backend {status === 'success' && `| พบ ${shown.length} จาก ${movies.length} เรื่อง`}
+            {/* เพราะ backend.js จะจัดการ cache ให้เอง */}
           </p>
         </div>
         <input value={query} onChange={(e) => setQuery(e.target.value)}
@@ -92,7 +93,6 @@ function Movies() {
         ))}
       </div>
 
-      {/* ปุ่มลองใหม่ต้องล้าง cache ก่อน ไม่งั้นจะได้ของเก่าหรือ error เดิมซ้ำ */}
       <MovieGrid movies={shown} status={status} error={error}
                  onRetry={() => { setReloadKey(k => k + 1); }} />
                  {/* //ไม่ต้องใช้ CACHE_KEY แล้วเพราะ backend.js จะจัดการ cache ให้เอง */}
