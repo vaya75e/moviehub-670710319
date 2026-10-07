@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import FeaturedCarousel from '../components/FeaturedCarousel';
 // TODO ขั้นที่ 5: import { useEffect } from 'react' และ import { getMovies } from '../api/tmdb'
 import { useEffect, useState } from 'react';
-import { getMovies } from '../api/tmdb';
+// import { getMovies } from '../api/tmdb';
+import { getMovies } from '../api/backend';
 
 const STEPS = [
   { n: 1, file: 'src/api/tmdb.js', what: 'เขียนส่วน fetch ใน getJSON' },
@@ -100,4 +101,4 @@ export default Home;
 
 //เป็นโครงเดิมของหน้า Home.jsx ที่มีการปรับปรุงให้สามารถดึงข้อมูลหนังจาก API ของ TMDB และแสดงผลในรูปแบบของ Carousel โดยมีการใช้ useEffect เพื่อโหลดข้อมูลเมื่อ component ถูก mount และใช้ useState เพื่อจัดการกับ state ของ picks (รายการหนังที่แนะนำ)
 // ดีกว่าที่สิ่งที่ปิดไว้คือการใช้ข้อมูลจากไฟล์ data.js โดยตรง ซึ่งจะทำให้สามารถแสดงผลหนังที่กำลังฉายในประเทศไทยได้อย่างถูกต้องและเป็นปัจจุบัน
-// ตรงที่ใช้สุ่มลำดับหนังคือการใช้ฟังก์ชัน shuffle เพื่อให้ผู้ใช้สามารถเห็นหนังแนะนำในลำดับที่แตกต่างกันทุกครั้งที่เข้ามาที่หน้า Home
+// ตรงที่ใช้สุ่มลำดับหนังคือการใช้ฟังก์ชัน shuffle เพื่อให้ผู้ใช้สามารถเห็นหนังแนะนำในลำดับที่แตกต่างกันทุกครั้งที่เข้ามาที่หน้า Home 

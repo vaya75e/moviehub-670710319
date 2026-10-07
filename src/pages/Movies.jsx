@@ -3,8 +3,10 @@ import MovieGrid from '../components/MovieGrid';
 // import { movies as localMovies } from '../data/data';
 // TODO ขั้นที่ 3: import { useEffect } from 'react' และ import { getMovies, CACHE_KEY } from '../api/tmdb' กับ { forget } from '../api/cache'
 import { useEffect, useState } from 'react';
-import { getMovies, CACHE_KEY } from '../api/tmdb';
-import { forget } from '../api/cache';  
+// import { getMovies, CACHE_KEY } from '../api/tmdb';
+import { getMovies } from '../api/backend'; //เอา CACHE_KEY ออกเพราะไม่ต้องใช้แล้วเพราะ backend.js จะจัดการเอง ต่างจาก tmdb.js ที่ต้องใช้ localStorage ในการเก็บ cache
+// Backend จะจัดการ cache ให้เอง ไม่ต้องใช้ CACHE_KEY และ forget() ของ tmdb.js อีกต่อไป โดยจะเก็บใน localStorage ของ browser และโหลดใหม่วันละครั้ง (ถ้าไม่พลาด) แต่ถ้าเกิด error จะไม่เก็บ cache ไว้เลย
+// import { forget } from '../api/cache';  // ไม่ต้องใช้แล้วเพราะ backend.js จะจัดการ cache ให้เอง
 
 function Movies() {
   const [query, setQuery] = useState('');          // คำค้น (controlled input) กรองในเครื่อง ไม่ยิง API
@@ -92,7 +94,8 @@ function Movies() {
 
       {/* ปุ่มลองใหม่ต้องล้าง cache ก่อน ไม่งั้นจะได้ของเก่าหรือ error เดิมซ้ำ */}
       <MovieGrid movies={shown} status={status} error={error}
-                 onRetry={() => { forget(CACHE_KEY); setReloadKey(k => k + 1); }} />
+                 onRetry={() => { setReloadKey(k => k + 1); }} />
+                 {/* //ไม่ต้องใช้ CACHE_KEY แล้วเพราะ backend.js จะจัดการ cache ให้เอง */}
     </div>
   );
 }
